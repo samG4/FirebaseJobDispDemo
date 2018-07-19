@@ -29,7 +29,7 @@ class MainActivity : AppCompatActivity() {
         date = calendar.date
 
         calendar.setOnDateChangeListener(OnDateChangeListener { view, year, month, day ->
-            tvDate.text = day.toString() + "/" + month + "/" + year
+            tvDate.text = day.toString() + "/" + (month+1) + "/" + year
             val c = Calendar.getInstance()
             c.set(year, month, day)
             c.set(Calendar.HOUR_OF_DAY, 0)
@@ -53,17 +53,21 @@ class MainActivity : AppCompatActivity() {
             Log.d("MainActi #time",""+num)
             dispatcher.cancelAll()
 
-            if(num>0) {
+            if((num+15)>0) {
                 val myJob = dispatcher.newJobBuilder()
                         .setService(NotificationService::class.java)
                         .setTag("notification_job")
                         .setRecurring(false)
-                        .setLifetime(Lifetime.UNTIL_NEXT_BOOT)
-                        .setTrigger(Trigger.executionWindow(num, num + 10))
+                        .setLifetime(Lifetime.FOREVER)
+                        .setTrigger(Trigger.executionWindow(num-15, num))
                         .setReplaceCurrent(false)
                         .build()
-                dispatcher.mustSchedule(myJob)
+                dispatcher.schedule(myJob)
                 Toast.makeText(applicationContext, "Job scheduled after "+num,Toast.LENGTH_LONG).show()
+            }
+            else{
+                Toast.makeText(applicationContext, "Increase the time " ,Toast.LENGTH_LONG).show()
+
             }
         })
 
